@@ -31,6 +31,30 @@
   <% end %>
 </p>
 
+<p>
+  <b>Rating:</b>
+  <%= @station.average_rating %> (<%= @station.ratings_count %>)
+  <% if current_user %>
+    <%= link_to '1', {:action => 'rate', :id => @station.id, :rate => 1} %>
+    <%= link_to '2', {:id => @station.id,  :action => 'rate', :rate => 2} %>
+    <%= link_to '3', {:id => @station.id, :action => 'rate', :rate => 3} %>
+    <%= link_to '4', {:id => @station.id, :action => 'rate', :rate => 4} %>
+    <%= link_to '5', {:id => @station.id, :action => 'rate', :rate => 5} %>
+  <% end %>
+</p>
 
+<p>
+  <b>Tags:</b>
+  <%=h @station.tag_list %>
+  <% form_for(@station) do |f| %>
+    <div id="station_tags">
+      <%= f.text_field :tag_list %>
+    </div>
+     <%= f.submit "Add" %>
+  <% end %>
+</p>
+
+<% if current_user %>
 <%= link_to 'Edit', edit_station_path(@station) %> |
+<% end %>
 <%= link_to 'Back', stations_path %>

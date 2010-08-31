@@ -1,3 +1,4 @@
+<div class="stations-index">
 <h1>Listing stations</h1>
 <div class="filter">
 <h2>Filter By</h2>
@@ -7,32 +8,29 @@
 </div>
 <%= will_paginate @stations %>
 
-<table class="stations-index-table">
-  <tr>
-    <th></th>
-    <th>Name</th>
-    <th>Website</th>
-    <th>State</th>
-    <th>Radio</th>
-    <th>Television</th>
-  </tr>
 
 <% @stations.each do |station| %>
-  <tr>
-    <td><div class="stations-image-clipped"><%= link_to (image_tag station.home.url), station %></div></td>
-    <td><%=h station.name %></td>
-    <td><%= link_to station.website, station.website %></td>
-    <td><%=h station.state %></td>
-    <td><%=h station.radio %></td>
-    <td><%=h station.television %></td>
-    <td><%= link_to 'Show', station %></td>
-    <td><%= link_to 'Edit', edit_station_path(station) %></td>
-    <td><%= link_to 'Destroy', station, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
+  <div class="station">
+    <div class="stations-image-clipped"><%= link_to (image_tag station.home.url), station %></div>
+<div>
+    <div><%=h station.name %></div>
+    <div><%= link_to station.website, station.website %></div>
+    <div><%=h station.state %></div>
+    <div><%= "Radio" if station.radio %></div>
+    <div><%= "Television" if  station.television %></div>
+    <div><%= station.average_rating %> (<%= station.ratings_count %>)</div>
+    <div><%= link_to 'Show', station %></div>
+<% if current_user %>
+    <div><%= link_to 'Edit', edit_station_path(station) %></div>
+    <div><%= link_to 'Destroy', station, :confirm => 'Are you sure?', :method => :delete %></div>
 <% end %>
-</table>
+</div>
+    <br style="clear: both" />
+  </div>
+<% end %>
 
 <br />
 <%= will_paginate @stations %>
 
-<%= link_to 'New station', new_station_path %>
+<%= link_to_if current_user, 'New station', new_station_path %>
+</div>
