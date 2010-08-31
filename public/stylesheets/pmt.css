@@ -39,16 +39,24 @@ td {
   vertical-align: top;
 }
 
+.station {
+  border-bottom: 1px solid #AAA;
+  padding-bottom: 2em;
+  padding-top: 2em;
+}
+
 .stations-image-clipped {
   height: 100px;
   overflow: hidden;
+  float: left;
+  margin-right: 2em;
 }
 
-.stations-index-table tr:hover {
+.station:hover {
   background-color: #EEE;
 }
 
-.stations-index-table tr:hover .stations-image-clipped {
+.stations-image-clipped:hover {
   height: auto;
   z-index: 1000;
   display: block;
