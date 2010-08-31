@@ -1,4 +1,10 @@
 class StationsController < ApplicationController
+  before_filter :require_user, :only => [:edit, :destroy]
+
+  def require_user
+    redirect_to stations_url unless current_user
+    return false
+  end
   # GET /stations
   # GET /stations.xml
   def index
@@ -13,6 +19,22 @@ class StationsController < ApplicationController
       format.html # index.html.erb
       format.xml  { render :xml => @stations }
     end
+  end
+
+  def top
+    @stations = Station.find_top_rated.paginate :page => params[:page], :per_page => 10
+    respond_to do |format|
+      format.html { render :index } # index.html.erb
+      format.xml  { render :xml => @stations }
+    end
+  end
+
+  def mosaic
+    @stations = Station.order(:cached_color).select { |x| x.home.file? }
+    respond_to do |format|
+      format.html # index.html.erb
+    end
+
   end
 
   # GET /stations/1
@@ -63,6 +85,8 @@ class StationsController < ApplicationController
   # PUT /stations/1.xml
   def update
     @station = Station.find(params[:id])
+    params[:station] = { :tag_list => params[:station][:tag_list] } unless current_user
+    params[:station][:tag_list] = (@station.tag_list + params[:station][:tag_list].split(" ")).uniq if params[:station][:tag_list]
 
     respond_to do |format|
       if @station.update_attributes(params[:station])
@@ -90,10 +114,10 @@ class StationsController < ApplicationController
 
   def rate
     @station = Station.find(params[:id])
-    @station.rate_it(params[:rate], nil)
+    @station.rate_it(params[:rate], current_user || User.find(2))
 
     respond_to do |format|
-      format.html # show.html.erb
+      format.html { redirect_to(@station) }
       format.xml  { render :xml => @station }
     end
   end

@@ -1,6 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
   Clearance::Routes.draw(map)
-  map.resources :stations
+  #map.resources :stations
 
   # The priority is based upon order of creation: first created -> highest priority.
 
@@ -11,6 +11,9 @@ ActionController::Routing::Routes.draw do |map|
   # Sample of named route:
   #   map.purchase 'products/:id/purchase', :controller => 'catalog', :action => 'purchase'
   # This route can be invoked with purchase_url(:id => product.id)
+
+  map.resources :stations, :collection => { :top => :get, :mosaic => :get }
+  map.connect 'stations/top', :controller => 'stations', :action => 'top'
 
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   map.resources :products
@@ -34,7 +37,7 @@ ActionController::Routing::Routes.draw do |map|
   #   end
 
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
-  # map.root :controller => "welcome"
+  map.root :controller => "stations"
 
   # See how all your routes lay out with "rake routes"
 
