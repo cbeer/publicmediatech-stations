@@ -11,6 +11,7 @@ class StationsController < ApplicationController
     @stations = nil
     @stations ||= Station.paginate :conditions => ['state = ? and genre = ?', params[:state], params[:genre]], :page => params[:page], :per_page => 10 if params[:state] and params[:genre]
     @stations ||= Station.tagged_with(params[:color], :on => :color ).paginate :page => params[:page], :per_page => 10 if params[:color]
+    @stations ||= Station.tagged_with(params[:tags], :on => :tags ).paginate :page => params[:page], :per_page => 10 if params[:tags]
     @stations ||= Station.paginate_by_genre params[:genre], :page => params[:page], :per_page => 10 if params[:genre]
     @stations ||= Station.paginate_by_state params[:state], :page => params[:page], :per_page => 10 if params[:state]
     @stations ||= Station.paginate :page => params[:page], :per_page => 10

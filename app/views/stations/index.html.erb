@@ -2,8 +2,9 @@
 <h1>Listing stations</h1>
 <div class="filter">
 <h2>Filter By</h2>
-<div>State: <%= State.all.map { |x| link_to_unless(params[:state] == x.abbreviation, x.abbreviation, {:state => x.abbreviation }) }.join ' | ' %> </div>
-<div>Color: <%= (0..14).map { |x| link_to_unless(params[:color] == x, x.to_s, {:color => x}, {:style => 'text-indent: -10000em; display: inline-block; width: 10px; height: 10px; background-color: hsl(' + (25*x).to_s + ', 100%, 50%);'})}%>
+<div>State: <%= State.all.map { |x| link_to_unless(params[:state] == x.abbreviation, x.abbreviation, {:action => 'index', :state => x.abbreviation }) }.join ' | ' %> </div>
+<div>Color: <%= (0..14).map { |x| link_to_unless(params[:color] == x, x.to_s, {:action => 'index',:color => x}, {:style => 'text-indent: -10000em; display: inline-block; width: 10px; height: 10px; background-color: hsl(' + (25*x).to_s + ', 100%, 50%);'})}%>
+<div>Tags: <% tag_cloud(Station.tag_counts_on(:tags), %w(css1 css2 css3 css4)) do |tag, css_class| %><%= link_to_unless params[:tags] == tag.name, tag.name, {:action => 'index', :tags => tag.name }, :class => css_class %> <% end %> </div>
 </div>
 </div>
 <%= will_paginate @stations %>
