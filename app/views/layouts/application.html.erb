@@ -12,7 +12,7 @@
 <div id="wrapper">
 <div id="header">
 <h1><a href="/stations"><span class="site-title">Public Media Tech:</span> Gallery of Station Websites</a></h1>
-<div>For some content, read <a href="http://cbeer.info/blog/2010/08/31/a-gallery-of-public-media-organization-websites/">this introductory blog post</a>.</div>
+<div>For some context, read <a href="http://cbeer.info/blog/2010/08/31/a-gallery-of-public-media-organization-websites/">this introductory blog post</a>.</div>
 <div><% unless current_user %><%= link_to :sign_up, :sign_up %> | <%= link_to :sign_in, :sign_in %><% end %><%= link_to :sign_out, :sign_out if current_user %> | <%= link_to "Top Rated Sites", :controller => 'stations', :action => 'top' %> | <%= link_to "Mosaic", :controller => 'stations', :action => 'mosaic' %></div>
 </div>
 
