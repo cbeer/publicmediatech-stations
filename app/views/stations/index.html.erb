@@ -1,0 +1,38 @@
+<h1>Listing stations</h1>
+<div class="filter">
+<h2>Filter By</h2>
+<div>State: <%= State.all.map { |x| link_to_unless(params[:state] == x.abbreviation, x.abbreviation, {:state => x.abbreviation }) }.join ' | ' %> </div>
+<div>Color: <%= (0..14).map { |x| link_to_unless(params[:color] == x, x.to_s, {:color => x}, {:style => 'text-indent: -10000em; display: inline-block; width: 10px; height: 10px; background-color: hsl(' + (25*x).to_s + ', 100%, 50%);'})}%>
+</div>
+</div>
+<%= will_paginate @stations %>
+
+<table class="stations-index-table">
+  <tr>
+    <th></th>
+    <th>Name</th>
+    <th>Website</th>
+    <th>State</th>
+    <th>Radio</th>
+    <th>Television</th>
+  </tr>
+
+<% @stations.each do |station| %>
+  <tr>
+    <td><div class="stations-image-clipped"><%= link_to (image_tag station.home.url), station %></div></td>
+    <td><%=h station.name %></td>
+    <td><%= link_to station.website, station.website %></td>
+    <td><%=h station.state %></td>
+    <td><%=h station.radio %></td>
+    <td><%=h station.television %></td>
+    <td><%= link_to 'Show', station %></td>
+    <td><%= link_to 'Edit', edit_station_path(station) %></td>
+    <td><%= link_to 'Destroy', station, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+<%= will_paginate @stations %>
+
+<%= link_to 'New station', new_station_path %>

@@ -1,0 +1,57 @@
+#wrapper {
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 40px;
+}
+#header .site-title {
+  font-weight: normal;
+}
+
+#header {
+  border-bottom: 5px solid #CCC;
+  padding-bottom: 2em;
+}
+
+h1 a:link, h1 a:visited {
+  color: #333;
+  text-decoration: none;
+}
+
+h1 a:hover {
+  background: none;
+  color: #666;
+}
+
+.filter {
+  border-bottom: 5px solid #CCC;
+  padding-bottom: 2em;
+}
+
+.station-home-image {
+  float: left;
+  margin-right: 20px;
+}
+
+td {
+  border-bottom: 1px solid #333;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  vertical-align: top;
+}
+
+.stations-image-clipped {
+  height: 100px;
+  overflow: hidden;
+}
+
+.stations-index-table tr:hover {
+  background-color: #EEE;
+}
+
+.stations-index-table tr:hover .stations-image-clipped {
+  height: auto;
+  z-index: 1000;
+  display: block;
+}
+tr {
+}

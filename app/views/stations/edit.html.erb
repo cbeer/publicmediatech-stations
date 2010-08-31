@@ -1,0 +1,32 @@
+<h1>Editing station</h1>
+
+<% form_for(@station) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :website %><br />
+    <%= f.text_field :website %>
+  </p>
+  <p>
+    <%= f.label :state %><br />
+    <%= f.text_field :state %>
+  </p>
+  <p>
+    <%= f.label :radio %><br />
+    <%= f.check_box :radio %>
+  </p>
+  <p>
+    <%= f.label :television %><br />
+    <%= f.check_box :television %>
+  </p>
+  <p>
+    <%= f.submit 'Update' %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @station %> |
+<%= link_to 'Back', stations_path %>

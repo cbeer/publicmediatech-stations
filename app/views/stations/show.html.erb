@@ -1,0 +1,36 @@
+<div class="station-home-image"><%= image_tag @station.home.url %></div>
+<p>
+  <b>Name:</b>
+  <%=h @station.name %>
+</p>
+
+<p>
+  <b>Website:</b>
+  <%= link_to @station.website, @station_website %>
+</p>
+
+<p>
+  <b>State:</b>
+  <%=h @station.state %>
+</p>
+
+<p>
+  <b>Radio:</b>
+  <%=h @station.radio %>
+</p>
+
+<p>
+  <b>Television:</b>
+  <%=h @station.television %>
+</p>
+
+<p>
+  <b>Colors:</b>
+  <% @station.color.each do |c| %>
+  <div style="width: 10px; height: 10px; background-color: hsl(<%= 25 * c.name.to_i %>, 100%, 50%);">&nbsp;</div> 
+  <% end %>
+</p>
+
+
+<%= link_to 'Edit', edit_station_path(@station) %> |
+<%= link_to 'Back', stations_path %>

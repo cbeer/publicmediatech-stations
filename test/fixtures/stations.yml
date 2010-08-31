@@ -1,0 +1,17 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name: MyString
+  website: MyString
+  state: MyString
+  format: MyString
+  radio: false
+  television: false
+
+two:
+  name: MyString
+  website: MyString
+  state: MyString
+  format: MyString
+  radio: false
+  television: false
