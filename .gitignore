@@ -1,0 +1,7 @@
+public/system/*
+*.sqlite3
+*.log
+jetty
+restart.txt
+*~
+*.swp
