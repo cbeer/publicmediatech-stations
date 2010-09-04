@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100831182851) do
+ActiveRecord::Schema.define(:version => 20100902153525) do
 
   create_table "comments", :force => true do |t|
     t.string   "title",            :limit => 50, :default => ""
@@ -61,6 +61,10 @@ ActiveRecord::Schema.define(:version => 20100831182851) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "cached_color"
+    t.integer  "status"
+    t.boolean  "primary"
+    t.boolean  "published"
+    t.string   "home_url"
   end
 
   create_table "taggings", :force => true do |t|
@@ -104,5 +108,19 @@ ActiveRecord::Schema.define(:version => 20100831182851) do
   add_index "users", ["email"], :name => "index_users_on_email"
   add_index "users", ["id", "confirmation_token"], :name => "index_users_on_id_and_confirmation_token"
   add_index "users", ["remember_token"], :name => "index_users_on_remember_token"
+
+  create_table "websites", :force => true do |t|
+    t.string   "url"
+    t.string   "screenshot_file_name"
+    t.string   "screenshot_content_type"
+    t.string   "screenshot_file_size"
+    t.string   "screenshot_updated_at"
+    t.integer  "station_id"
+    t.text     "content"
+    t.integer  "color"
+    t.string   "category"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
 end
