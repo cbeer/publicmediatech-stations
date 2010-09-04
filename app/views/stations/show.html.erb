@@ -1,4 +1,4 @@
-<div class="station-home-image"><%= image_tag @station.home.url %></div>
+<div class="station-home-image"><%= image_tag @station.home.screenshot.url if @station.home %></div>
 <p>
   <b>Name:</b>
   <%=h @station.name %>
@@ -6,7 +6,7 @@
 
 <p>
   <b>Website:</b>
-  <%= link_to @station.website, @station_website %>
+  <%= link_to @station.home_url, @station.home_url %>
 </p>
 
 <p>
@@ -33,7 +33,7 @@
 
 <p>
   <b>Rating:</b>
-  <%= @station.average_rating %> (<%= @station.ratings_count %>)
+  <span class="average-rating"><%= @station.average_rating %></span> (<span class="rating-count"><%= @station.ratings_count %></span>)
   <% if current_user %>
     <%= link_to '1', {:action => 'rate', :id => @station.id, :rate => 1} %>
     <%= link_to '2', {:id => @station.id,  :action => 'rate', :rate => 2} %>

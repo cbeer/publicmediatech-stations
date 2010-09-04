@@ -4,7 +4,8 @@
 <h2>Filter By</h2>
 <div>State: <%= State.all.map { |x| link_to_unless(params[:state] == x.abbreviation, x.abbreviation, {:action => 'index', :state => x.abbreviation }) }.join ' | ' %> </div>
 <div>Color: <%= (0..14).map { |x| link_to_unless(params[:color] == x, x.to_s, {:action => 'index',:color => x}, {:style => 'text-indent: -10000em; display: inline-block; width: 10px; height: 10px; background-color: hsl(' + (25*x).to_s + ', 100%, 50%);'})}%>
-<div>Tags: <% tag_cloud(Station.tag_counts_on(:tags), %w(css1 css2 css3 css4)) do |tag, css_class| %><%= link_to_unless params[:tags] == tag.name, tag.name, {:action => 'index', :tags => tag.name }, :class => css_class %> <% end %> </div>
+<div>Tags: <% tag_cloud(Station.tag_counts_on(:tags), %w(css1 css2 css3 css4 css5 css6)) do |tag, css_class| %><%= link_to_unless params[:tags] == tag.name, tag.name, {:action => 'index', :tags => tag.name }, :class => css_class %> <% end %> </div>
+<div>Rating: <%= link_to "Highest Rated", :controller => 'stations', :action => 'top' %> </div>
 </div>
 </div>
 <%= will_paginate @stations %>
@@ -12,14 +13,37 @@
 
 <% @stations.each do |station| %>
   <div class="station">
-    <div class="stations-image-clipped"><%= link_to (image_tag station.home.url), station %></div>
-<div>
-    <div><%=h station.name %></div>
-    <div><%= link_to station.website, station.website %></div>
-    <div><%=h station.state %></div>
-    <div><%= "Radio" if station.radio %></div>
-    <div><%= "Television" if  station.television %></div>
-    <div><%= station.average_rating %> (<%= station.ratings_count %>)</div>
+    <div class="stations-image-clipped"><%= link_to (image_tag station.home.screenshot.url), station if station.home %></div>
+<div style="float: left">
+    <div><%=h station.name %> (<%=h station.call_letters %>)</div>
+    <div><%= link_to station.home_url, station.home_url %></div>
+    <div><%=h station.city %>, <%=h station.state %></div>
+    <!-- <div><%=h station.tag_list %></div>
+    <div><%= station.average_rating %> (<%= station.ratings_count %>)</div> -->
+<p>
+  <b>Rating:</b>
+  <span class="average-rating"><%= station.average_rating %></span> (<span class="rating-count"><%= station.ratings_count %></span>)
+  <span class="rating-links">
+  <% if current_user %>
+    <%= link_to '1', {:action => 'rate', :id => station.id, :rate => 1} %>
+    <%= link_to '2', {:id => station.id,  :action => 'rate', :rate => 2} %>
+    <%= link_to '3', {:id => station.id, :action => 'rate', :rate => 3} %>
+    <%= link_to '4', {:id => station.id, :action => 'rate', :rate => 4} %>
+    <%= link_to '5', {:id => station.id, :action => 'rate', :rate => 5} %>
+  <% end %>
+  </span>
+</p>
+
+<p>
+  <b>Tags:</b>
+  <%=h station.tag_list %>
+  <% form_for(station) do |f| %>
+    <div id="station_tags">
+      <%= f.text_field :tag_list, :value => '' %>
+    </div>
+     <%= f.submit "Add" %>
+  <% end %>
+</p>
     <div><%= link_to 'Show', station %></div>
 <% if current_user %>
     <div><%= link_to 'Edit', edit_station_path(station) %></div>
@@ -35,3 +59,6 @@
 
 <%= link_to_if current_user, 'New station', new_station_path %>
 </div>
+<script type="text/javascript">
+$('.rating-links a').bind('click', function() { url = $(this).attr('href') ; that = this; $.ajax({url: url, dataType: 'json', success: function(data) { $(that).closest('p').find('.average-rating').html(data.station.average_rating); $(that).closest('p').find('.rating-count').html(data.station.ratings_count);}}); return false;});
+</script>

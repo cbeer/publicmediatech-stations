@@ -5,6 +5,8 @@
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <title>Stations: <%= controller.action_name %></title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<%= javascript_include_tag 'jrails' %>
   <%= stylesheet_link_tag 'scaffold' %>
   <%= stylesheet_link_tag 'pmt' %>
 </head>
@@ -13,7 +15,7 @@
 <div id="header">
 <h1><a href="/stations"><span class="site-title">Public Media Tech:</span> Gallery of Station Websites</a></h1>
 <div>For some context, read <a href="http://cbeer.info/blog/2010/08/31/a-gallery-of-public-media-organization-websites/">this introductory blog post</a>.</div>
-<div><% unless current_user %><%= link_to :sign_up, :sign_up %> | <%= link_to :sign_in, :sign_in %><% end %><%= link_to :sign_out, :sign_out if current_user %> | <%= link_to "Top Rated Sites", :controller => 'stations', :action => 'top' %> | <%= link_to "Mosaic", :controller => 'stations', :action => 'mosaic' %></div>
+<div><% unless current_user %><%= link_to :sign_up, :sign_up %> | <%= link_to :sign_in, :sign_in %><% end %><%= link_to :sign_out, :sign_out if current_user %> |  <%= link_to "Mosaic", :controller => 'stations', :action => 'mosaic' %></div>
 </div>
 
     <div id="flash">
@@ -24,5 +26,16 @@
 
 <%= yield %>
 </div>
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-12975852-1']);
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+</script>
 </body>
 </html>

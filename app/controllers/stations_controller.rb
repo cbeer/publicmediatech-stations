@@ -9,12 +9,18 @@ class StationsController < ApplicationController
   # GET /stations.xml
   def index
     @stations = nil
-    @stations ||= Station.paginate :conditions => ['state = ? and genre = ?', params[:state], params[:genre]], :page => params[:page], :per_page => 10 if params[:state] and params[:genre]
-    @stations ||= Station.tagged_with(params[:color], :on => :color ).paginate :page => params[:page], :per_page => 10 if params[:color]
-    @stations ||= Station.tagged_with(params[:tags], :on => :tags ).paginate :page => params[:page], :per_page => 10 if params[:tags]
-    @stations ||= Station.paginate_by_genre params[:genre], :page => params[:page], :per_page => 10 if params[:genre]
-    @stations ||= Station.paginate_by_state params[:state], :page => params[:page], :per_page => 10 if params[:state]
-    @stations ||= Station.paginate :page => params[:page], :per_page => 10
+    @stations ||= Station.paginate :conditions => ['status != 2 and state = ? and genre = ?', params[:state], params[:genre]], :page => params[:page], :per_page => 10 if params[:state] and params[:genre]
+    @stations ||= Station.tagged_with(params[:color], :on => :color ).paginate :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:color]
+    @stations ||= Station.tagged_with(params[:tags], :on => :tags ).paginate :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:tags]
+    @stations ||= Station.paginate_by_genre params[:genre], :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:genre]
+    @stations ||= Station.paginate_by_state params[:state], :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:state]
+    @stations ||= Station.paginate :conditions => ['status != 2'], :page => params[:page], :per_page => 10
+
+   if params[:test]
+    Station.with_scope(:order => 'state') do
+      @stations = Station.paginate :page => params[:page], :per_page => 10
+    end
+end
 
     respond_to do |format|
       format.html # index.html.erb
@@ -23,7 +29,11 @@ class StationsController < ApplicationController
   end
 
   def top
-    @stations = Station.find_top_rated.paginate :page => params[:page], :per_page => 10
+    @stations = nil
+    @stations ||= Station.tagged_with(params[:tags], :on => :tags ).find_top_rated.paginate :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:tags]
+    @stations ||= Station.find_top_rated.paginate_by_genre params[:genre], :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:genre]
+    @stations ||= Station.find_top_rated.paginate_by_state params[:state], :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:state]
+    @stations ||= Station.find_top_rated.paginate :page => params[:page], :per_page => 10
     respond_to do |format|
       format.html { render :index } # index.html.erb
       format.xml  { render :xml => @stations }
@@ -31,7 +41,7 @@ class StationsController < ApplicationController
   end
 
   def mosaic
-    @stations = Station.order(:cached_color).select { |x| x.home.file? }
+    @stations = Station.all(:conditions => ['status != 2'], :order => :cached_color).select { |x| x.home && x.home.screenshot.file? }
     respond_to do |format|
       format.html # index.html.erb
     end
@@ -45,6 +55,7 @@ class StationsController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
+        format.json { render :json => @station }
       format.xml  { render :xml => @station }
     end
   end
@@ -93,9 +104,11 @@ class StationsController < ApplicationController
       if @station.update_attributes(params[:station])
         flash[:notice] = 'Station was successfully updated.'
         format.html { redirect_to(@station) }
+        format.json { render :json => @station }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
+        format.json { render :json => @station.errors }
         format.xml  { render :xml => @station.errors, :status => :unprocessable_entity }
       end
     end
@@ -120,6 +133,7 @@ class StationsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(@station) }
       format.xml  { render :xml => @station }
+      format.json { render :json => @station.to_json(:methods => [:average_rating, :ratings_count]) }
     end
   end
 end
