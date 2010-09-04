@@ -1,0 +1,23 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  url: MyString
+  home_file_name: MyString
+  home_content_type: MyString
+  home_file_size: MyString
+  home_updated_at: MyString
+  station_id: 1
+  content: MyText
+  color: 1
+  category: MyString
+
+two:
+  url: MyString
+  home_file_name: MyString
+  home_content_type: MyString
+  home_file_size: MyString
+  home_updated_at: MyString
+  station_id: 1
+  content: MyText
+  color: 1
+  category: MyString
