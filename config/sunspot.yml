@@ -1,0 +1,19 @@
+production:
+  solr:
+    hostname: localhost
+    port: 8983
+    log_level: WARNING
+
+development:
+  solr:
+    hostname: localhost
+    port: 8983
+    log_level: INFO
+    max_memory: 512m
+
+test:
+  solr:
+    hostname: localhost
+    port: 8983
+    log_level: WARNING
+    

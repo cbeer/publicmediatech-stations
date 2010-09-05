@@ -1,0 +1,92 @@
+<div class="stations-index">
+<h1>Listing stations</h1>
+<div class="filter">
+<div>
+<form>
+<% form_tag('/stations/search') do  %>
+<%= label_tag :q, 'Search' %>
+<%= text_field_tag 'q', params[:q] %>
+<%= submit_tag :search %>
+<% end %>
+</div>
+<h2>Filter By:</h2>
+<%= link_to '[reset filters]', url_for({:q => params[:q]}) %>
+<div><h3>State</h3>
+<% @search.facet(:state).rows.map do |row| %>
+  <%= link_to(row.value, url_for(:state => row.value,:overwrite_params=>{})) %> (<%= row.count %>)
+<% end %>
+</div>
+<div><h3>Color</h3>
+<% @search.facet(:cached_color).rows.map do |row| %>
+   <%= link_to_unless params[:cached_color] == row.value, row.value,  url_for(:overwrite_params=>{},:cached_color => [row.value] + params[:cached_color].to_a), {:style => 'text-indent: -10000em; display: inline-block; width: 10px; height: ' + (3 + row.count / 10 ).to_s + 'px; background-color: hsl(' + (25*row.value.to_i).to_s + ', 100%, 50%);'} %>
+<% end %>
+</div>
+<div><h3>Tags</h3>
+<% @search.facet(:tags).rows.map do |row| %>
+  <%= link_to(row.value, url_for(:tags => [row.value] + params[:tags].to_a,:overwrite_params=>{})) %> (<%= row.count %>)
+<% end %>
+</div>
+
+<div><h3>Rating</h3>
+<% @search.facet(:average_rating).rows.map do |row| %>
+  <%= link_to(row.value.first, url_for(:tags => row.value,:overwrite_params=>{})) %> (<%= row.count %>)
+<% end %>
+</div>
+
+</div>
+<%= will_paginate @search.results %>
+
+<div class="results">
+  <% @search.each_hit_with_result do |hit, station| %>
+    <div class="station result station-<%= station.id %>">
+       <div class="stations-image-clipped"><%= link_to (image_tag station.home.screenshot.url), station if station.home %></div>
+      <div style="float: left; width: 270px;">
+ <h2><%=h station.name %> (<%=h station.call_letters %>)</h2>
+    <div><%= link_to station.home_url, station.home_url %></div>
+    <div><%=h station.city %>, <%=h station.state %></div>
+    <!-- <div><%=h station.tag_list %></div>
+    <div><%= station.average_rating %> (<%= station.ratings_count %>)</div> -->
+<p>
+  <b>Rating:</b>
+  <span class="average-rating"><%= station.average_rating %></span> (<span class="rating-count"><%= station.ratings_count %></span>)
+  <span class="rating-links">
+  <% if current_user %>
+    <%= link_to '1', {:action => 'rate', :id => station.id, :rate => 1} %>
+    <%= link_to '2', {:id => station.id,  :action => 'rate', :rate => 2} %>
+    <%= link_to '3', {:id => station.id, :action => 'rate', :rate => 3} %>
+    <%= link_to '4', {:id => station.id, :action => 'rate', :rate => 4} %>
+    <%= link_to '5', {:id => station.id, :action => 'rate', :rate => 5} %>
+  <% end %>
+  </span>
+</p>
+
+<p>
+  <b>Tags:</b>
+  <span class="tag-list"><%=h station.tag_list %></span>
+  <% remote_form_for(station, :success => 'j = $.parseJSON(request);$(".station-" + j.station.id).find(".tag-list").html(j.station.tag_list.join(", ")); $(".station_tags input", ".station-" + j.station.id ).val(""); ') do |f| %>
+    <div class="station_tags">
+      <%= f.text_field :tag_list, :value => '' %>
+    </div>
+     <%= f.submit "Add" %>
+
+     <% end %>
+</p>
+    <div><%= link_to 'Show', station %></div>
+<% if current_user %>
+    <div><%= link_to 'Edit', edit_station_path(station) %></div>
+    <div><%= link_to 'Destroy', station, :confirm => 'Are you sure?', :method => :delete %></div>
+<% end %>
+ 
+      </div>
+      <hr style="clear: both;" />
+    </div>
+  <% end %>
+</div>
+
+<%= will_paginate @search.results %>
+<%= link_to_if current_user, 'New station', new_station_path %>
+</div>
+<script type="text/javascript">
+$('.rating-links a').bind('click', function() { url = $(this).attr('href') ; that = this; $.ajax({url: url, dataType: 'json', success: function(data) { $(that).closest('p').find('.average-rating').html(data.station.average_rating); $(that).closest('p').find('.rating-count').html(data.station.ratings_count);}}); return false;});
+
+</script>

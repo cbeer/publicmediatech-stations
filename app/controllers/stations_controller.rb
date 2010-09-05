@@ -7,7 +7,7 @@ class StationsController < ApplicationController
   end
   # GET /stations
   # GET /stations.xml
-  def index
+  def index_old # index
     @stations = nil
     @stations ||= Station.paginate :conditions => ['status != 2 and state = ? and genre = ?', params[:state], params[:genre]], :page => params[:page], :per_page => 10 if params[:state] and params[:genre]
     @stations ||= Station.tagged_with(params[:color], :on => :color ).paginate :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:color]
@@ -28,12 +28,51 @@ end
     end
   end
 
+  def index #search
+    @search = Station.search do
+      keywords(params[:q])
+      with(:state, params[:state]) if params[:state].present?
+      with(:tags).all_of([params[:tags]].flatten) if params[:tags].present?
+      with(:cached_color, params[:cached_color]) if params[:cached_color].present?
+      with(:average_rating).greater_than(params[:average_rating]) if params[:average_rating].present?
+      without(:status, 2)
+      facet :state, :sort => :index
+      facet :cached_color, :sort => :index
+      facet :tags, :sort => :index
+      facet(:average_rating) do
+    row(0.0..1.0) do
+      with(:average_rating, 0.0..5.0)
+    end
+    row(1.0..2.0) do
+      with(:average_rating, 1.0..5.0)
+    end
+    row(2.0..3.0) do
+      with(:average_rating, 2.0..5.0)
+    end
+    row(3.0..4.0) do
+      with(:average_rating, 3.0..5.0)
+    end
+    row(4.0..5.0) do
+      with(:average_rating, 4.0..5.0)
+    end
+  end
+
+      paginate :per_page => 10, :page => params[:page] || 1
+      order_by :score, :desc
+      order_by :average_rating, :desc
+    end
+  
+    respond_to do |format|
+      format.html { render :search  } # index.html.erb
+    end
+  end
+
   def top
     @stations = nil
-    @stations ||= Station.tagged_with(params[:tags], :on => :tags ).find_top_rated.paginate :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:tags]
-    @stations ||= Station.find_top_rated.paginate_by_genre params[:genre], :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:genre]
-    @stations ||= Station.find_top_rated.paginate_by_state params[:state], :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:state]
-    @stations ||= Station.find_top_rated.paginate :page => params[:page], :per_page => 10
+    @stations ||= Station.tagged_with(params[:tags], :on => :tags ).find_top_rated(:limit => 50).paginate :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:tags]
+    @stations ||= Station.find_top_rated(:limit => 50).paginate_by_genre params[:genre], :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:genre]
+    @stations ||= Station.find_top_rated(:limit => 50).paginate_by_state params[:state], :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:state]
+    @stations ||= Station.find_top_rated(:limit => 50).paginate :page => params[:page], :per_page => 10
     respond_to do |format|
       format.html { render :index } # index.html.erb
       format.xml  { render :xml => @stations }
@@ -104,11 +143,11 @@ end
       if @station.update_attributes(params[:station])
         flash[:notice] = 'Station was successfully updated.'
         format.html { redirect_to(@station) }
-        format.json { render :json => @station }
+        format.js { render :json => @station.as_json(:methods => [:tag_list, :average_rating, :ratings_count]) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.json { render :json => @station.errors }
+        format.js { render :json => @station.errors }
         format.xml  { render :xml => @station.errors, :status => :unprocessable_entity }
       end
     end
