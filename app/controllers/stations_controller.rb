@@ -36,6 +36,7 @@ end
       with(:cached_color, params[:cached_color]) if params[:cached_color].present?
       with(:average_rating).greater_than(params[:average_rating]) if params[:average_rating].present?
       without(:status, 2)
+      without(:tags, 'duplicate')
       facet :state, :sort => :index
       facet :cached_color, :sort => :index
       facet :tags, :sort => :index
