@@ -1,7 +1,12 @@
 public/system/*
 *.sqlite3
+*.backup
 *.log
+tmp
 jetty
 restart.txt
 *~
 *.swp
+solr/data
+solr/lib
+log
