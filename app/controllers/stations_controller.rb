@@ -167,7 +167,14 @@ end
 
   def rate
     @station = Station.find(params[:id])
-    @station.rate_it(params[:rate], current_user || User.find(2))
+    u = current_user
+    unless u
+      u = User.find_or_create_by_email(request.remote_ip + '@anonymous.example.org')
+      u.password = request.remote_ip
+      u.save
+    end
+
+    @station.rate_it(params[:rate], u)
 
     respond_to do |format|
       format.html { redirect_to(@station) }
