@@ -1,0 +1,34 @@
+<h1>Listing transmitters</h1>
+
+<table>
+  <tr>
+    <th>Station</th>
+    <th>Lat</th>
+    <th>Long</th>
+    <th>Address</th>
+    <th>Frequency</th>
+    <th>Erp</th>
+    <th>Kind</th>
+    <th>Call letters</th>
+  </tr>
+
+<% @transmitters.each do |transmitter| %>
+  <tr>
+    <td><%=h transmitter.station_id %></td>
+    <td><%=h transmitter.lat %></td>
+    <td><%=h transmitter.long %></td>
+    <td><%=h transmitter.address %></td>
+    <td><%=h transmitter.frequency %></td>
+    <td><%=h transmitter.erp %></td>
+    <td><%=h transmitter.kind %></td>
+    <td><%=h transmitter.call_letters %></td>
+    <td><%= link_to 'Show', transmitter %></td>
+    <td><%= link_to 'Edit', edit_transmitter_path(transmitter) %></td>
+    <td><%= link_to 'Destroy', transmitter, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New transmitter', new_transmitter_path %>

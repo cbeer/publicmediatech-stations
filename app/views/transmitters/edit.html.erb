@@ -1,0 +1,44 @@
+<h1>Editing transmitter</h1>
+
+<% form_for(@transmitter) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :station_id %><br />
+    <%= f.text_field :station_id %>
+  </p>
+  <p>
+    <%= f.label :lat %><br />
+    <%= f.text_field :lat %>
+  </p>
+  <p>
+    <%= f.label :long %><br />
+    <%= f.text_field :long %>
+  </p>
+  <p>
+    <%= f.label :address %><br />
+    <%= f.text_area :address %>
+  </p>
+  <p>
+    <%= f.label :frequency %><br />
+    <%= f.text_field :frequency %>
+  </p>
+  <p>
+    <%= f.label :erp %><br />
+    <%= f.text_field :erp %>
+  </p>
+  <p>
+    <%= f.label :kind %><br />
+    <%= f.text_field :kind %>
+  </p>
+  <p>
+    <%= f.label :call_letters %><br />
+    <%= f.text_field :call_letters %>
+  </p>
+  <p>
+    <%= f.submit 'Update' %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @transmitter %> |
+<%= link_to 'Back', transmitters_path %>

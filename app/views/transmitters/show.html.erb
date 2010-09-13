@@ -1,0 +1,43 @@
+<p>
+  <b>Station:</b>
+  <%=h @transmitter.station_id %>
+</p>
+
+<p>
+  <b>Lat:</b>
+  <%=h @transmitter.lat %>
+</p>
+
+<p>
+  <b>Long:</b>
+  <%=h @transmitter.long %>
+</p>
+
+<p>
+  <b>Address:</b>
+  <%=h @transmitter.address %>
+</p>
+
+<p>
+  <b>Frequency:</b>
+  <%=h @transmitter.frequency %>
+</p>
+
+<p>
+  <b>Erp:</b>
+  <%=h @transmitter.erp %>
+</p>
+
+<p>
+  <b>Kind:</b>
+  <%=h @transmitter.kind %>
+</p>
+
+<p>
+  <b>Call letters:</b>
+  <%=h @transmitter.call_letters %>
+</p>
+
+
+<%= link_to 'Edit', edit_transmitter_path(@transmitter) %> |
+<%= link_to 'Back', transmitters_path %>
