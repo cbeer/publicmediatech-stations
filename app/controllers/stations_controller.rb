@@ -5,78 +5,50 @@ class StationsController < ApplicationController
     redirect_to stations_url unless current_user
     return false
   end
+
   # GET /stations
   # GET /stations.xml
-  def index_old # index
-    @stations = nil
-    @stations ||= Station.paginate :conditions => ['status != 2 and state = ? and genre = ?', params[:state], params[:genre]], :page => params[:page], :per_page => 10 if params[:state] and params[:genre]
-    @stations ||= Station.tagged_with(params[:color], :on => :color ).paginate :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:color]
-    @stations ||= Station.tagged_with(params[:tags], :on => :tags ).paginate :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:tags]
-    @stations ||= Station.paginate_by_genre params[:genre], :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:genre]
-    @stations ||= Station.paginate_by_state params[:state], :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:state]
-    @stations ||= Station.paginate :conditions => ['status != 2'], :page => params[:page], :per_page => 10
-
-   if params[:test]
-    Station.with_scope(:order => 'state') do
-      @stations = Station.paginate :page => params[:page], :per_page => 10
-    end
-end
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @stations }
-    end
-  end
-
-  def index #search
+  def index
     @search = Station.search do
       keywords(params[:q])
       with(:state, params[:state]) if params[:state].present?
       with(:tags).all_of([params[:tags]].flatten) if params[:tags].present?
       with(:cached_color, params[:cached_color]) if params[:cached_color].present?
-      with(:average_rating).greater_than(params[:average_rating]) if params[:average_rating].present?
+      with(:average_rating, 0) if params[:average_rating].present? and params[:average_rating] == 'unrated'
+      with(:average_rating).greater_than(params[:average_rating]) if params[:average_rating].present? and params[:average_rating] != 'unrated'
       without(:status, 2)
       without(:tags, 'duplicate')
       facet :state, :sort => :index
       facet :cached_color, :sort => :index
       facet :tags, :sort => :index
       facet(:average_rating) do
-    row(0.0..1.0) do
-      with(:average_rating, 0.0..5.0)
-    end
-    row(1.0..2.0) do
-      with(:average_rating, 1.0..5.0)
-    end
-    row(2.0..3.0) do
-      with(:average_rating, 2.0..5.0)
-    end
-    row(3.0..4.0) do
-      with(:average_rating, 3.0..5.0)
-    end
-    row(4.0..5.0) do
-      with(:average_rating, 4.0..5.0)
-    end
-  end
+        row('unrated') do
+          with(:average_rating, 0.0)
+        end
+        row(0.0) do
+          with(:average_rating, 0.0..5.0)
+        end
+        row(1.0) do
+          with(:average_rating, 1.0..5.0)
+        end
+        row(2.0) do
+          with(:average_rating, 2.0..5.0)
+        end
+        row(3.0) do
+          with(:average_rating, 3.0..5.0)
+        end
+        row(4.0) do
+          with(:average_rating, 4.0..5.0)
+        end
+      end
 
       paginate :per_page => 10, :page => params[:page] || 1
-      order_by :score, :desc
+      order_by :score, :desc unless params[:q].nil? or params[:q].empty?
       order_by :average_rating, :desc
     end
   
     respond_to do |format|
-      format.html { render :search  } # index.html.erb
-    end
-  end
-
-  def top
-    @stations = nil
-    @stations ||= Station.tagged_with(params[:tags], :on => :tags ).find_top_rated(:limit => 50).paginate :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:tags]
-    @stations ||= Station.find_top_rated(:limit => 50).paginate_by_genre params[:genre], :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:genre]
-    @stations ||= Station.find_top_rated(:limit => 50).paginate_by_state params[:state], :conditions => ['status != 2'], :page => params[:page], :per_page => 10 if params[:state]
-    @stations ||= Station.find_top_rated(:limit => 50).paginate :page => params[:page], :per_page => 10
-    respond_to do |format|
-      format.html { render :index } # index.html.erb
-      format.xml  { render :xml => @stations }
+      format.html # index.html.erb
     end
   end
 
@@ -138,10 +110,11 @@ end
   def update
     @station = Station.find(params[:id])
     params[:station] = { :tag_list => params[:station][:tag_list] } unless current_user
-    params[:station][:tag_list] = (@station.tag_list + params[:station][:tag_list].split(" ")).uniq if params[:station][:tag_list]
+    params[:station][:tag_list] = (@station.tag_list + params[:station][:tag_list].split(" ")).uniq if params[:station][:tag_list] and params[:update] == true
 
     respond_to do |format|
       if @station.update_attributes(params[:station])
+        Sunspot.index! @station
         flash[:notice] = 'Station was successfully updated.'
         format.html { redirect_to(@station) }
         format.js { render :json => @station.as_json(:methods => [:tag_list, :average_rating, :ratings_count]) }
@@ -176,6 +149,7 @@ end
     end
 
     @station.rate_it(params[:rate], u)
+    Sunspot.index! @station
 
     respond_to do |format|
       format.html { redirect_to(@station) }
