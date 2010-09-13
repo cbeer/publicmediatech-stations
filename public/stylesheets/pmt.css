@@ -1,30 +1,53 @@
 #wrapper {
   margin-left: 20px;
   margin-right: 20px;
-  margin-top: 40px;
+  margin-top: 0;
 }
+
+body {
+  margin: 0;
+  padding: 0;
+  min-width: 956px;
+}
+
 #header .site-title {
   font-weight: normal;
 }
 
 #header {
-  border-bottom: 5px solid #CCC;
-  padding-bottom: 2em;
+  margin-left: -20px;
+  margin-right: -20px;
+  padding: 20px;
+  border-bottom: 1px solid #999;
+  padding-top: 30px;
+  background-color: #AAA;
+  color: white;
+  margin-bottom: 3em;
 }
 
-h1 a:link, h1 a:visited {
-  color: #333;
+#header h1 {
+  float: left;
+}
+
+.meta {
+  line-height: 18px;
+  margin: 17px 0px;
+  padding-right: 5%;
+  float: right;
+}
+
+#header a:link, #header a:visited {
+  color: white;
   text-decoration: none;
 }
 
-h1 a:hover {
+#header a:hover {
   background: none;
   color: #666;
 }
 
 .filter {
-  border-bottom: 5px solid #CCC;
-  padding-bottom: 2em;
+  padding-bottom: 1.5em;
 }
 
 .station-home-image {
@@ -50,13 +73,126 @@ td {
   margin-right: 2em;
 }
 
-.station:hover {
-  background-color: #EEE;
-}
-
 .css1 { font-size: 0.7em; }
   .css2 { font-size: 1.0em; }
   .css3 { font-size: 1.4em; }
   .css4 { font-size: 1.8em; }
   .css5 { font-size: 2.0em; }
   .css6 { font-size: 2.2em; }
+
+.pagination {
+  padding-left: 15px;
+  clear: both;
+  line-height: 4em;
+  border: 1px solid #CCCCCC;
+  background-color: #EEE;
+  width: 90%;
+  padding-right: 45px;
+}
+
+
+.stations-show #header {
+  border-bottom: none;
+}
+
+.station-home-image {
+  -moz-box-shadow: 5px 5px 5px #CCC;
+  -webkit-box-shadow: 5px 5px 5px #CCC;
+}
+
+.metadata {
+  border: 1px solid #CCC;
+  float: left;
+  padding: 13px;
+  padding-top: 0;
+  width: 325px;
+}
+
+.h3 {
+ font-weight: bold;
+}
+
+.gravatar {
+  float: left;
+  margin-right: 10px;
+  margin-bottom: 1em;
+}
+
+.comment {
+  clear: both;
+}
+
+.comment .date {
+  font-size: 0.7em;
+  color: #999;
+}
+
+hr {
+  clear: both;
+}
+
+textarea.short {
+  height: 70px;
+}
+
+.station-name {
+  font-size: 16px;
+}
+
+.facet {
+  float: left;
+  width: 45%;
+  margin-right: 20px;
+ background-color: #EEE;
+  border: 1px solid #CCC;
+  padding: 10px;
+  margin-top: 10px; margin-bottom: 10px;
+}
+
+.facet h3 {
+  margin-top: 0;
+}
+.facet .f {
+  display: inline-block;
+  padding-right: 5px;
+}
+
+.filter h2 {
+  float:left;
+}
+
+.filter .reset-filter {
+  float: left;
+  line-height: 22px;
+  margin: 16px 12px;
+}
+
+.filter .search-form {
+  width: 90%;
+  padding-left: 10px;
+   padding-right: 50px;
+  border: 1px solid #CCC;
+  background-color: #EEE;
+  line-height: 4em;
+  margin-bottom: 10px;
+  clear: both;
+}
+
+.search-form label {
+  font-weight: bold; font-size: 15px;
+}
+
+.result:last-child {
+  border-bottom: none;
+}
+
+.facet-tags {
+  clear: left;
+}
+
+.facet h3 {
+  border-bottom: 1px solid #DDD;
+  margin-left: -10px;
+  margin-right: -10px;
+  padding-left: 10px;
+}
