@@ -9,11 +9,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100902153525) do
+ActiveRecord::Schema.define(:version => 20100912200450) do
 
   create_table "comments", :force => true do |t|
     t.string   "title",            :limit => 50, :default => ""
-    t.text     "comment",                        :default => ""
+    t.text     "comment"
     t.integer  "commentable_id"
     t.string   "commentable_type"
     t.integer  "user_id"
@@ -21,9 +21,15 @@ ActiveRecord::Schema.define(:version => 20100902153525) do
     t.datetime "updated_at"
   end
 
-  add_index "comments", ["commentable_id"], :name => "index_comments_on_commentable_id"
-  add_index "comments", ["commentable_type"], :name => "index_comments_on_commentable_type"
-  add_index "comments", ["user_id"], :name => "index_comments_on_user_id"
+  create_table "pages", :force => true do |t|
+    t.string   "url"
+    t.string   "title"
+    t.text     "body"
+    t.text     "links"
+    t.text     "headers"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "ratings", :force => true do |t|
     t.integer  "rateable_id"
@@ -33,8 +39,6 @@ ActiveRecord::Schema.define(:version => 20100902153525) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  add_index "ratings", ["rateable_id", "rateable_type"], :name => "index_ratings_on_rateable_id_and_rateable_type"
 
   create_table "states", :force => true do |t|
     t.string   "name"
@@ -77,11 +81,21 @@ ActiveRecord::Schema.define(:version => 20100902153525) do
     t.datetime "created_at"
   end
 
-  add_index "taggings", ["tag_id"], :name => "index_taggings_on_tag_id"
-  add_index "taggings", ["taggable_id", "taggable_type", "context"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_context"
-
   create_table "tags", :force => true do |t|
     t.string "name"
+  end
+
+  create_table "transmitters", :force => true do |t|
+    t.integer  "station_id"
+    t.float    "lat"
+    t.float    "long"
+    t.text     "address"
+    t.string   "frequency"
+    t.string   "erp"
+    t.string   "kind"
+    t.string   "call_letters"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "user_ratings", :force => true do |t|
@@ -92,8 +106,6 @@ ActiveRecord::Schema.define(:version => 20100902153525) do
     t.datetime "updated_at"
   end
 
-  add_index "user_ratings", ["user_id", "rating_id"], :name => "index_user_ratings_on_user_id_and_rating_id"
-
   create_table "users", :force => true do |t|
     t.string   "email"
     t.string   "encrypted_password", :limit => 128
@@ -103,11 +115,8 @@ ActiveRecord::Schema.define(:version => 20100902153525) do
     t.boolean  "email_confirmed",                   :default => false, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "name"
   end
-
-  add_index "users", ["email"], :name => "index_users_on_email"
-  add_index "users", ["id", "confirmation_token"], :name => "index_users_on_id_and_confirmation_token"
-  add_index "users", ["remember_token"], :name => "index_users_on_remember_token"
 
   create_table "websites", :force => true do |t|
     t.string   "url"
