@@ -26,6 +26,8 @@ class Station < ActiveRecord::Base
   acts_as_commentable
   acts_as_rateable
   has_many :website
+  accepts_nested_attributes_for :website
+  has_many :transmitter
   def published_at
     self.created_at
   end
