@@ -8,24 +8,33 @@
     <%= f.text_field :name %>
   </p>
   <p>
-    <%= f.label :home_url %><br />
-    <%= f.text_field :home_url %>
+    <%= f.label :city %><br />
+    <%= f.text_field :city %>
   </p>
   <p>
     <%= f.label :state %><br />
     <%= f.text_field :state %>
   </p>
   <p>
-    <%= f.label :radio %><br />
-    <%= f.check_box :radio %>
+    <%= f.label :tag_list %><br />
+    <%= f.text_field :tag_list %>
+  </p>
+<h3>Websites</h3>
+  <% f.fields_for(:website) do |w| %>
+  <p>
+    <%= w.label :url %><br />
+    <%= w.text_field :url %>
   </p>
   <p>
-    <%= f.label :television %><br />
-    <%= f.check_box :television %>
+    <%= w.label :category %><br />
+    <%= w.text_field :category %>
   </p>
+
   <p>
     <%= f.submit 'Update' %>
   </p>
+
+  <% end %>
 <% end %>
 
 <%= link_to 'Show', @station %> |

@@ -1,62 +1,61 @@
 <div class="stations-index">
-<h1>Listing stations</h1>
+<h1>Listing stations (<%= @search.total %>)</h1>
 <div class="filter">
-<h2>Filter By</h2>
-<div>State: <%= State.all.map { |x| link_to_unless(params[:state] == x.abbreviation, x.abbreviation, {:action => 'index', :state => x.abbreviation }) }.join ' | ' %> </div>
-<div>Color: <%= (0..14).map { |x| link_to_unless(params[:color] == x, x.to_s, {:action => 'index',:color => x}, {:style => 'text-indent: -10000em; display: inline-block; width: 10px; height: 10px; background-color: hsl(' + (25*x).to_s + ', 100%, 50%);'})}%>
-<div>Tags: <% tag_cloud(Station.tag_counts_on(:tags), %w(css1 css2 css3 css4 css5 css6)) do |tag, css_class| %><%= link_to_unless params[:tags] == tag.name, tag.name, {:action => 'index', :tags => tag.name }, :class => css_class %> <% end %> </div>
-<div>Rating: <%= link_to "Highest Rated", :controller => 'stations', :action => 'top' %> </div>
+<h2>Filter By:</h2>
+<div class="reset-filter">
+<%= link_to '[reset filters]', url_for({}) %>
 </div>
+<div class="search-form">
+<form>
+<% form_tag('/stations') do  %>
+<%= label_tag :q, 'Search' %>
+<%= text_field_tag 'q', params[:q] %>
+<%= submit_tag :search %>
+<% end %>
 </div>
-<%= will_paginate @stations %>
+<div class="facet facet-state"><h3>State</h3>
+<% @search.facet(:state).rows.map do |row| %>
+<span class="f">
+  <%= link_to(row.value, url_for(:state => row.value,:overwrite_params=>{})) %>&nbsp;(<%= row.count %>)
+</span>
+<% end %>
+<!-- <div id="chart_div"></div> -->
+</div>
+<div class="facet facet-color"><h3>Color</h3>
+<% @search.facet(:cached_color).rows.map do |row| %>
+   <%= link_to_unless params[:cached_color] == row.value, row.value,  url_for(:overwrite_params=>{},:cached_color => [row.value] + params[:cached_color].to_a), {:style => 'text-indent: -10000em; display: inline-block; width: 10px; height: ' + (3 + row.count / 2 ).to_s + 'px; background-color: hsl(' + (25*row.value.to_i).to_s + ', 100%, 50%);'} %>
+<% end %>
+</div>
+<div class="facet facet-tags"><h3>Tags</h3>
+<% @search.facet(:tags).rows.map do |row| %>
+<span class="f">
+  <%= link_to(row.value, url_for(:overwrite_params=>{:tags => [row.value] + params[:tags].to_a})) %>&nbsp;(<%= row.count %>)
+</span>
+<% end %>
+</div>
 
+<div class="facet facet-rating"><h3>Rating</h3>
+<% @search.facet(:average_rating).rows.map do |row| %>
+<span class="f">
+  <%= link_to(row.value, url_for(:overwrite_params=>{:average_rating => row.value})) %> (<%= row.count %>)
+</span>
+<% end %>
+</div>
+<br style="clear: both;" />
 
-<% @stations.each do |station| %>
-  <div class="station">
-    <div class="stations-image-clipped"><%= link_to (image_tag station.home.screenshot.url), station if station.home %></div>
-<div style="float: left">
-    <div><%=h station.name %> (<%=h station.call_letters %>)</div>
-    <div><%= link_to station.home_url, station.home_url %></div>
-    <div><%=h station.city %>, <%=h station.state %></div>
-    <!-- <div><%=h station.tag_list %></div>
-    <div><%= station.average_rating %> (<%= station.ratings_count %>)</div> -->
-<p>
-  <b>Rating:</b>
-  <span class="average-rating"><%= station.average_rating %></span> (<span class="rating-count"><%= station.ratings_count %></span>)
-  <span class="rating-links">
-    <%= link_to '1', {:action => 'rate', :id => station.id, :rate => 1} %>
-    <%= link_to '2', {:id => station.id,  :action => 'rate', :rate => 2} %>
-    <%= link_to '3', {:id => station.id, :action => 'rate', :rate => 3} %>
-    <%= link_to '4', {:id => station.id, :action => 'rate', :rate => 4} %>
-    <%= link_to '5', {:id => station.id, :action => 'rate', :rate => 5} %>
-  </span>
-</p>
+</div>
+<%= will_paginate @search.results %>
 
-<p>
-  <b>Tags:</b>
-  <%=h station.tag_list %>
-  <% form_for(station) do |f| %>
-    <div id="station_tags">
-      <%= f.text_field :tag_list, :value => '' %>
+<div class="results">
+  <% @search.each_hit_with_result do |hit, station| %>
+    <div class="station result station-<%= station.id %>">
+       <div class="stations-image-clipped"><%= link_to (image_tag station.home.screenshot.url), station.home.url if station.home %></div>
+<%= render :partial => 'metadata', :locals => { :station => station } %>
+      <br style="clear: both;" />
     </div>
-     <%= f.submit "Add" %>
   <% end %>
-</p>
-    <div><%= link_to 'Show', station %></div>
-<% if current_user %>
-    <div><%= link_to 'Edit', edit_station_path(station) %></div>
-    <div><%= link_to 'Destroy', station, :confirm => 'Are you sure?', :method => :delete %></div>
-<% end %>
 </div>
-    <br style="clear: both" />
-  </div>
-<% end %>
 
-<br />
-<%= will_paginate @stations %>
-
-<%= link_to_if current_user, 'New station', new_station_path %>
+<%= will_paginate @search.results %>
+<%= link_to 'New station', new_station_path if current_user %>
 </div>
-<script type="text/javascript">
-$('.rating-links a').bind('click', function() { url = $(this).attr('href') ; that = this; $.ajax({url: url, dataType: 'json', success: function(data) { $(that).closest('p').find('.average-rating').html(data.station.average_rating); $(that).closest('p').find('.rating-count').html(data.station.ratings_count);}}); return false;});
-</script>

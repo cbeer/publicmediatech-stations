@@ -1,0 +1,20 @@
+<% @comment = Comment.new %>
+
+<% form_for(@comment) do |c| %>
+<%= c.hidden_field :commentable_id, :value => object.id %>
+<%= c.hidden_field :commentable_type, :value => object.class %>
+<%= c.text_area :comment, :class=>'short' %>
+
+<% unless current_user %>
+<div>
+<%= label :user, :name %>
+<%= text_field :user, :name %>
+</div>
+<div>
+<%= label :user, :email %>
+<%= text_field :user, :email %>
+</div>
+<% end %>
+
+<div>  <%= c.submit "Add comment" %></div>
+<% end %>

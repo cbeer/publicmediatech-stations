@@ -1,0 +1,7 @@
+
+<% unless @organization.comments.empty? %>
+<h3>Comments</h3>
+<ol class="comments">
+<%= render :partial => '/comment', :collection => @organization.comments %>
+</ol>
+<% end %>

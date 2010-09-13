@@ -1,0 +1,57 @@
+<div class="metadata">
+ <h2 class="station-name">
+    <%=h station.name %> (<%=h station.call_letters %>)
+  </h2>
+  <div>
+    <%= link_to station.home_url, station.home_url %>
+  </div>
+  <div><%=h station.city %>, <%=h station.state %></div>
+
+<p>
+  <b>Transmitters:</b>
+  <%=h station.transmitter.map { |x| x.call_letters }.join ", " %>
+</p>
+
+<%= link_to 'Edit', edit_station_path(station) if current_user%>
+
+<hr />
+
+<p>
+  <b>Rating:</b>
+  <span class="average-rating"><%= number_with_precision station.average_rating, :precision => 2 %></span> (<span class="rating-count"><%= station.ratings_count %></span>)
+  <span class="rating-links">
+    <%= link_to '1', {:action => 'rate', :id => station.id, :rate => 1} %>
+    <%= link_to '2', {:id => station.id,  :action => 'rate', :rate => 2} %>
+    <%= link_to '3', {:id => station.id, :action => 'rate', :rate => 3} %>
+    <%= link_to '4', {:id => station.id, :action => 'rate', :rate => 4} %>
+    <%= link_to '5', {:id => station.id, :action => 'rate', :rate => 5} %>
+  </span>
+</p>
+
+<p>
+  <b>Tags:</b>
+  <span class="tag-list"><%=h station.tag_list %></span>
+  <% remote_form_for(station, :success => 'j = $.parseJSON(request);$(".station-" + j.station.id).find(".tag-list").html(j.station.tag_list.join(", ")); $(".station_tags input", ".station-" + j.station.id ).val(""); ') do |f| %>
+    <%= hidden_field_tag "update",  true %>
+    <div class="station_tags">
+      <%= f.text_field :tag_list, :value => '' %>
+    </div>
+     <%= f.submit "Add tag" %>
+
+     <% end %>
+</p>
+
+<p>
+<% unless station.comments.empty? %>
+  <b>Comments:</b>
+  <%= render :partial => '/comment', :collection => station.comments %>
+<hr />
+<% end %>
+  <h3>What do you think about the website?</h3>
+  <%= render :partial => '/comment_form', :locals => {:object => station } %>
+
+<script type="text/javascript">
+$('.rating-links a').bind('click', function() { url = $(this).attr('href') ; that = this; $.ajax({url: url, dataType: 'json', success: function(data) { $(that).closest('p').find('.average-rating').html(data.station.average_rating); $(that).closest('p').find('.rating-count').html(data.station.ratings_count);}}); return false;});
+
+</script>
+</div>
