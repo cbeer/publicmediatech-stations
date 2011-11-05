@@ -47,9 +47,10 @@
   <%= render :partial => '/comment', :collection => station.comments %>
 <hr />
 <% end %>
+<% if current_user %>
   <h3>What do you think about the website?</h3>
   <%= render :partial => '/comment_form', :locals => {:object => station } %>
-
+<% end %>
 <script type="text/javascript">
 $('.rating-links a').bind('click', function() { url = $(this).attr('href') ; that = this; $.ajax({url: url, dataType: 'json', success: function(data) { $(that).closest('p').find('.average-rating').html(data.station.average_rating); $(that).closest('p').find('.rating-count').html(data.station.ratings_count);}}); return false;});
 

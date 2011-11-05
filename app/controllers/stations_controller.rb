@@ -9,6 +9,7 @@ class StationsController < ApplicationController
   # GET /stations
   # GET /stations.xml
   def index
+    @category = params[:category] || 'home'
     @search = Station.search do
       keywords(params[:q])
       with(:state, params[:state]) if params[:state].present?
@@ -42,13 +43,14 @@ class StationsController < ApplicationController
         end
       end
 
-      paginate :per_page => 10, :page => params[:page] || 1
+      paginate :per_page => params[:per_page] || 10, :page => params[:page] || 1
       order_by :score, :desc unless params[:q].nil? or params[:q].empty?
       order_by :average_rating, :desc
     end
   
     respond_to do |format|
       format.html # index.html.erb
+      format.csv # { render :csv => @search }
     end
   end
 

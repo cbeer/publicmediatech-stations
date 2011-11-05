@@ -1,0 +1,7 @@
+<%= FasterCSV.generate do |csv|
+  csv << ['ID', 'NAME', 'CALL_LETTERS', 'CITY', 'STATE', 'HOME_URL', 'PRIMARY', 'RADIO', 'TELEVISION']
+  @search.results.each do |org|
+    csv << [org.id, org.name, org.call_letters, org.city, org.state, org.home_url, org.primary, org.radio, org.television]
+  end
+  end
+%>

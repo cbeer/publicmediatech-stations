@@ -1,5 +1,5 @@
 <div class="comment">
-<%= gravatar_image_tag object.user.email, :class => "gravatar" %>
-<div><span class="h3"><%= object.user.name || object.user.login %></span> <span class="date"><%=h object.created_at.strftime("%B %d, %Y") %></span></div> 
+<%= gravatar_image_tag object.user.email, :class => "gravatar"  if object.user and  object.user.email %>
+<div><span class="h3"><%= (object.user.name || object.user.login) if object.user %></span> <span class="date"><%=h object.created_at.strftime("%B %d, %Y") %></span></div> 
 <p><%= object.comment %></p>
 </div>

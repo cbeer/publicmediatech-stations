@@ -3,13 +3,14 @@
 <div class="filter">
 <h2>Filter By:</h2>
 <div class="reset-filter">
-<%= link_to '[reset filters]', url_for({}) %>
+<%= link_to '[reset filters]', url_for({:category => @category}) %>
 </div>
 <div class="search-form">
 <form>
 <% form_tag('/stations') do  %>
 <%= label_tag :q, 'Search' %>
 <%= text_field_tag 'q', params[:q] %>
+<%= hidden_field_tag :category, @category %>
 <%= submit_tag :search %>
 <% end %>
 </div>
@@ -49,7 +50,8 @@
 <div class="results">
   <% @search.each_hit_with_result do |hit, station| %>
     <div class="station result station-<%= station.id %>">
-       <div class="stations-image-clipped"><%= link_to (image_tag station.home.screenshot.url), station.home.url if station.home %></div>
+      <% website = station.website.select { |x| x.category == @category }.first %>
+       <div class="stations-image-clipped"><%= link_to (image_tag website.screenshot.url(:gallery)), website.url if website %></div>
 <%= render :partial => 'metadata', :locals => { :station => station } %>
       <br style="clear: both;" />
     </div>
